@@ -78,6 +78,6 @@ resource "kubernetes_cluster_role_binding" "eks_cluster_rolebinding" {
   }
   subject {
     kind = "Group"
-    name = "everyone"
+    name = var.opa_k8s.group
   }
 }

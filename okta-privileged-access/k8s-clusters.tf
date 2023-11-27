@@ -1,3 +1,5 @@
+variable k8s_group {}
+
 resource "oktapam_kubernetes_cluster" "opa_k8s_cluster" {
   auth_mechanism = "OIDC_RSA2048"
   key            = "opa-k8s-aws"
@@ -6,8 +8,8 @@ resource "oktapam_kubernetes_cluster" "opa_k8s_cluster" {
 
 resource "oktapam_kubernetes_cluster_group" "opa_k8s_cluster_group" {
   cluster_selector = "env=development"
-  group_name       = "everyone"
-  claims           = { groups = "everyone" }
+  group_name       = var.k8s_group
+  claims           = { groups = var.k8s_group }
 }
 
 variable aws_eks {}
