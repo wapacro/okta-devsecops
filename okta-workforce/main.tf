@@ -7,8 +7,13 @@ terraform {
   }
 }
 
+variable org {}
+variable url {}
+variable key {}
+
+
 provider "okta" {
-  org_name  = ""
-  base_url  = "oktapreview.com"
-  api_token = ""
+  org_name  = var.org
+  base_url  = var.url
+  api_token = var.key
 }

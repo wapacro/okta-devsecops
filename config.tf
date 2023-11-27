@@ -1,7 +1,50 @@
+variable "okta_org" {
+  type        = string
+  description = "Okta Organization Name"
+}
+
+variable "okta_url" {
+  type        = string
+  description = "Okta Base URL (okta.com or oktapreview.com)"
+  default     = "oktapreview.com"
+}
+
+variable "okta_key" {
+  type        = string
+  description = "Okta API Key"
+}
+
+variable "opa_key" {
+  type        = string
+  description = "Okta Privileged Access API Key"
+}
+
+variable "opa_secret" {
+  type        = string
+  description = "Okta Privileged Access API Secret"
+}
+
+variable "opa_team" {
+  type        = string
+  description = "Okta Privileged Access Team Name"
+}
+
+variable "opa_host" {
+  type        = string
+  description = "Okta Privileged Access API Host"
+  default     = ""
+}
+
+variable "opa_k8s_group" {
+  type        = string
+  description = "Okta Privileged Access group name for K8s access"
+  default     = "everyone"
+}
+
 variable "aws_region" {
   type        = string
   description = "AWS Region"
-  default     = "us-west-1"
+  default     = "eu-central-2"
 }
 
 variable "aws_linux_image_id" {
@@ -19,5 +62,5 @@ variable "aws_windows_image_id" {
 variable "aws_instance_type" {
   type        = string
   description = "Instance type for EC2 instances"
-  default     = "t2.micro"
+  default     = "t3.micro"
 }
