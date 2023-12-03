@@ -18,7 +18,8 @@ module "okta-privileged-access" {
   team      = var.opa_team
   host      = var.opa_host
   k8s_group = var.opa_k8s_group
-  aws_eks   = module.aws-infrastructure.aws_eks
+
+  aws_eks = module.aws-infrastructure.aws_eks
 }
 
 module "aws-infrastructure" {
