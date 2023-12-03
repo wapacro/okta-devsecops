@@ -25,6 +25,11 @@ module "okta-privileged-access" {
 module "aws-infrastructure" {
   source = "./aws-infrastructure"
 
-  region  = var.aws_region
-  opa_k8s = module.okta-privileged-access.opa_k8s
+  region           = var.aws_region
+  instance_type    = var.aws_instance_type
+  linux_image_id   = var.aws_linux_image_id
+  windows_image_id = var.aws_windows_image_id
+
+  opa_k8s        = module.okta-privileged-access.opa_k8s
+  opa_enrollment = module.okta-privileged-access.opa_enrollment
 }

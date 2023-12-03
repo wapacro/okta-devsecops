@@ -1,0 +1,25 @@
+#!/bin/bash
+echo "Add a gateway setup token"
+sudo mkdir -p /var/lib/sft-gatewayd
+echo "${token}" | sudo tee /var/lib/sft-gatewayd/setup.token
+export DEBIAN_FRONTEND=noninteractive
+
+echo "Add a basic sft gateway configuration"
+sudo mkdir -p /etc/sft/
+sftcfg=$(cat <<EOF
+---
+RDP:
+  Enabled: true
+  DangerouslyIgnoreServerCertificates: true
+#LogDestinations:
+#  - Type: s3
+#    Bucket: ""
+#    AccessKeyId: SECRET
+#    SecretKey: SECRET
+#    SessionToken: SECRET
+EOF
+)
+echo -e "$sftcfg" | sudo tee /etc/sft/sft-gatewayd.yaml
+
+echo "Install sft gateway"
+sudo apt-get install -y scaleft-gateway

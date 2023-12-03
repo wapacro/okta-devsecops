@@ -1,0 +1,23 @@
+<powershell>
+Write-Output "Generate state directory"
+$systemprofile = (Get-CIMInstance win32_userprofile  | where-object sid -eq "S-1-5-18" | select -ExpandProperty localpath)
+$stateDir = Join-Path $systemprofile -ChildPath "AppData" | Join-Path -ChildPath "Local" | Join-Path -ChildPath "ScaleFT"
+New-Item -ItemType directory -Path $stateDir -Force
+
+Write-Output "Add an enrollment token"
+$tokenPath = Join-Path $stateDir -ChildPath "enrollment.token"
+"${token}" | Out-File $tokenPath -Encoding "ASCII" -Force
+
+Write-Output "Add a basic sftd configuration"
+$configPath = Join-Path $stateDir -ChildPath "sftd.yaml"
+'CanonicalName: "${name}"' | Out-File $configPath -Encoding "ASCII" -Force
+
+Write-Output "Download and install OPA Server Agent Installer"
+$msiPath = [System.IO.Path]::ChangeExtension([System.IO.Path]::GetTempFileName(), '.msi')
+Invoke-WebRequest -Uri "https://dist.scaleft.com/server-tools/windows/latest/ScaleFT-Server-Tools-latest.msi" -OutFile $msiPath
+Start-Process -FilePath msiexec -ArgumentList /i,$msiPath,/qn  -Wait
+Remove-Item -Force $msiPath
+
+Write-Output "Start OPA Server Agent"
+Start-Service scaleft-server-tools
+</powershell>
