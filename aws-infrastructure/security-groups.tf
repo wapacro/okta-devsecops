@@ -38,18 +38,20 @@ locals {
   # Default Ingress Firewall Rules for Linux-based, OPA-managed servers
   linux_ingress_rules = [
     {
-      description = "OPA sftd: Incoming SSH connections"
-      cidr        = "0.0.0.0/0"
-      protocol    = "TCP"
-      from_port   = 22
-      to_port     = 22
+      description    = "OPA sftd: Incoming SSH connections"
+      cidr           = null
+      security_group = aws_security_group.opa_gateway_defaults.id
+      protocol       = "TCP"
+      from_port      = 22
+      to_port        = 22
     },
     {
-      description = "OPA sftd: Incoming connections to help provision On Demand users"
-      cidr        = "0.0.0.0/0"
-      protocol    = "TCP"
-      from_port   = 4421
-      to_port     = 4421
+      description    = "OPA sftd: Incoming connections to help provision On Demand users"
+      cidr           = null
+      security_group = aws_security_group.opa_gateway_defaults.id
+      protocol       = "TCP"
+      from_port      = 4421
+      to_port        = 4421
     },
   ]
 
@@ -67,18 +69,20 @@ locals {
   # Default Ingress Firewall Rules for Windows-based, OPA-managed servers
   windows_ingress_rules = [
     {
-      description = "OPA sftd: Incoming AD-joined RDP sessions"
-      cidr        = "0.0.0.0/0"
-      protocol    = "TCP"
-      from_port   = 3389
-      to_port     = 3389
+      description    = "OPA sftd: Incoming AD-joined RDP sessions"
+      cidr           = null
+      security_group = aws_security_group.opa_gateway_defaults.id
+      protocol       = "TCP"
+      from_port      = 3389
+      to_port        = 3389
     },
     {
-      description = "OPA sftd: Incoming connections to help provision On Demand users and proxy non-AD RDP sessions"
-      cidr        = "0.0.0.0/0"
-      protocol    = "TCP"
-      from_port   = 4421
-      to_port     = 4421
+      description    = "OPA sftd: Incoming connections to help provision On Demand users and proxy non-AD RDP sessions"
+      cidr           = null
+      security_group = aws_security_group.opa_gateway_defaults.id
+      protocol       = "TCP"
+      from_port      = 4421
+      to_port        = 4421
     },
   ]
 
@@ -143,12 +147,13 @@ resource "aws_vpc_security_group_ingress_rule" "opa_linux_defaults_ingress_rules
   index => rule
   }
 
-  security_group_id = aws_security_group.opa_linux_defaults.id
-  cidr_ipv4         = each.value.cidr
-  from_port         = each.value.from_port
-  to_port           = each.value.to_port
-  ip_protocol       = each.value.protocol
-  description       = each.value.description
+  security_group_id            = aws_security_group.opa_linux_defaults.id
+  referenced_security_group_id = each.value.security_group
+  cidr_ipv4                    = each.value.cidr
+  from_port                    = each.value.from_port
+  to_port                      = each.value.to_port
+  ip_protocol                  = each.value.protocol
+  description                  = each.value.description
 }
 
 resource "aws_vpc_security_group_egress_rule" "opa_linux_defaults_egress_rules" {
@@ -171,12 +176,13 @@ resource "aws_vpc_security_group_ingress_rule" "opa_windows_defaults_ingress_rul
   index => rule
   }
 
-  security_group_id = aws_security_group.opa_windows_defaults.id
-  cidr_ipv4         = each.value.cidr
-  from_port         = each.value.from_port
-  to_port           = each.value.to_port
-  ip_protocol       = each.value.protocol
-  description       = each.value.description
+  security_group_id            = aws_security_group.opa_windows_defaults.id
+  referenced_security_group_id = each.value.security_group
+  cidr_ipv4                    = each.value.cidr
+  from_port                    = each.value.from_port
+  to_port                      = each.value.to_port
+  ip_protocol                  = each.value.protocol
+  description                  = each.value.description
 }
 
 resource "aws_vpc_security_group_egress_rule" "opa_windows_defaults_egress_rules" {

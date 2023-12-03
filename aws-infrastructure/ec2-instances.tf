@@ -24,7 +24,8 @@ resource "aws_instance" "ec2_instance_gateway" {
 
 resource "aws_instance" "ec2_instance_linux_server" {
   ami                         = var.linux_image_id
-  associate_public_ip_address = true # vnet?
+  associate_public_ip_address = false
+  subnet_id                   = aws_subnet.network_private_subnet_az1.id
   instance_type               = var.instance_type
   vpc_security_group_ids      = [aws_security_group.opa_linux_defaults.id]
   user_data                   = templatefile("./aws-infrastructure/scripts/server-enrollment-linux.tftpl", {
@@ -38,7 +39,8 @@ resource "aws_instance" "ec2_instance_linux_server" {
 
 resource "aws_instance" "ec2_instance_windows_server_non-ad" {
   ami                         = var.windows_image_id
-  associate_public_ip_address = true # vnet?
+  associate_public_ip_address = false
+  subnet_id                   = aws_subnet.network_private_subnet_az1.id
   instance_type               = var.instance_type
   vpc_security_group_ids      = [aws_security_group.opa_windows_defaults.id]
   user_data                   = templatefile("./aws-infrastructure/scripts/server-enrollment-windows.tftpl", {
