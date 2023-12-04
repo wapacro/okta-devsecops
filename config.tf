@@ -59,8 +59,14 @@ variable "aws_windows_image_id" {
   default     = "ami-03bbfe1c798814651" # Windows Server 2022
 }
 
-variable "aws_instance_type" {
+variable "aws_gateway_instance_type" {
   type        = string
-  description = "Instance type for EC2 instances"
-  default     = "t3.micro"
+  description = "Instance type for EC2 OPA Gateways"
+  default     = "r6i.large"
+}
+
+variable "aws_server_instance_type" {
+  type        = string
+  description = "Instance type for EC2 OPA Servers"
+  default     = "t3.small"
 }
