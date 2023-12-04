@@ -11,15 +11,26 @@ sftcfg=$(cat <<EOF
 RDP:
   Enabled: true
   DangerouslyIgnoreServerCertificates: true
-#LogDestinations:
-#  - Type: s3
-#    Bucket: ""
-#    AccessKeyId: SECRET
-#    SecretKey: SECRET
-#    SessionToken: SECRET
+LogDestinations:
+  - Type: file
+    LogDir: /var/log/sft/sessions
 EOF
 )
 echo -e "$sftcfg" | sudo tee /etc/sft/sft-gatewayd.yaml
 
-echo "Install sft gateway"
-sudo apt-get install -y scaleft-gateway
+echo "Install sft gateway and RDP transcoder"
+sudo apt-get install -y scaleft-gateway scaleft-client-tools scaleft-rdp-transcoder
+
+echo "Install AWS CLI"
+sudo apt-get install -y awscli
+
+echo "Create session recording handler script"
+srhs=$(cat <<EOF
+${sessionRecordingHandler}
+EOF
+)
+echo -e "$srhs" | sudo tee /usr/local/bin/gateway-session-recording-handler.sh
+
+echo "Configure regular session recording handling"
+sudo chmod +x /usr/local/bin/gateway-session-recording-handler.sh
+echo "* * * * * /usr/local/bin/gateway-session-recording-handler.sh >> /var/log/sft/session-recording-handler.log 2>&1" | crontab -

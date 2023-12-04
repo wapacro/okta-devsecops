@@ -15,7 +15,13 @@ resource "aws_instance" "ec2_instance_gateway" {
       token = var.opa_enrollment.gateway_enrollment_token
     }),
     templatefile("./aws-infrastructure/scripts/gateway-enrollment.tftpl", {
-      token = var.opa_enrollment.gateway_setup_token
+      token                   = var.opa_enrollment.gateway_setup_token
+      sessionRecordingHandler = templatefile("./aws-infrastructure/scripts/gateway-session-recording-handler.tftpl", {
+        s3key    = aws_iam_access_key.s3_access_key.id
+        s3secret = aws_iam_access_key.s3_access_key.secret
+        s3region = var.region
+        s3bucket = aws_s3_bucket.s3_bucket.bucket
+      })
     })
   ])
   tags = {

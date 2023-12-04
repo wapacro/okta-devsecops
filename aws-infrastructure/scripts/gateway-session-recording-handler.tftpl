@@ -1,0 +1,43 @@
+#!/bin/bash
+
+export AWS_ACCESS_KEY_ID="${s3key}"
+export AWS_SECRET_ACCESS_KEY="${s3secret}"
+export AWS_DEFAULT_REGION="${s3region}"
+S3_BUCKET="${s3bucket}"
+LOCAL_DIRECTORY="/var/log/sft/sessions"
+TEMP_DIRECTORY="/tmp"
+
+# Find all *.asa files in the specified directory
+files=\$(find "\$LOCAL_DIRECTORY" -maxdepth 1 -type f -name "*.asa")
+
+# Check if there are any files to process
+if [ -n "\$files" ]; then
+  for file in \$files; do
+    # Extract filename without path
+    filename=\$(basename -- "\$file")
+
+    # Move the source file to temporary directory
+    mv "\$file" "\$TEMP_DIRECTORY/\$filename"
+    file="\$TEMP_DIRECTORY/\$filename"
+
+    # Export based on filename containing "rdp"
+    if echo "\$filename" | grep -q "rdp"; then
+      outfile="\$${LOCAL_DIRECTORY}/\$${filename}.mkv"
+      sft session-logs export "\$file" --format mkv --output "\$outfile" --insecure
+    else
+      outfile="\$${LOCAL_DIRECTORY}/\$${filename}.cast"
+      sft session-logs export "\$file" --format asciinema --output "\$outfile" --insecure
+    fi
+
+    # Upload the converted file(s) to AWS S3
+    aws s3 cp --recursive "\$outfile" "s3://\$S3_BUCKET/"
+
+    # Delete the source and converted files
+    rm -rf "\$file" "\$outfile"
+
+    echo "Processed and uploaded: \$filename"
+    break
+  done
+else
+  echo "No *.asa files found in \$LOCAL_DIRECTORY. Waiting for files..."
+fi
