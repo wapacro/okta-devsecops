@@ -56,7 +56,7 @@ variable "aws_linux_image_id" {
 variable "aws_windows_image_id" {
   type        = string
   description = "AMI ID for Windows-based EC2 instances"
-  default     = "ami-03bbfe1c798814651" # Windows Server 2022
+  default     = "ami-086f090975761e5c1" # Windows Server 2022 Base
 }
 
 variable "aws_gateway_instance_type" {
