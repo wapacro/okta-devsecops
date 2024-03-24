@@ -31,6 +31,7 @@ module "aws-infrastructure" {
   linux_image_id        = var.aws_linux_image_id
   windows_image_id      = var.aws_windows_image_id
 
+  okta_org       = var.okta_org
   opa_k8s        = module.okta-privileged-access.opa_k8s
   opa_enrollment = module.okta-privileged-access.opa_enrollment
 }

@@ -1,5 +1,7 @@
+variable okta_org {}
+
 resource "aws_s3_bucket" "s3_bucket" {
-  bucket        = "opa-session-recordings"
+  bucket        = "${var.okta_org}-opa-session-recordings"
   force_destroy = true
 }
 
